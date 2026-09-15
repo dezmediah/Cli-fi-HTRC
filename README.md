@@ -33,11 +33,11 @@ Eras are cut at two events rather than into equal buckets:
 
 | file | what it does |
 |---|---|
-| `notebooks/SF_word2vec_eras.ipynb` | trains word2vec per era, three seeds each, and compares an environmental lexicon across eras: neighbours, word-pair contrasts, seed stability, Procrustes alignment. Models save to `MODEL_DIR` on the secure volume. |
-| `scripts/w2v_export.py` | reads the saved models and writes release-safe tables (pair contrasts, neighbours, stability, frequency per million and shift, semantic shift, a small vector matrix per era), six directories all under 1 MB |
+| `notebooks/SF_word2vec_eras_v2.ipynb` | the current word2vec notebook: trains per era, three seeds each, and compares an expanded, WordNet-checked environmental lexicon across eras: neighbours, word-pair contrasts, seed stability, Procrustes alignment. Models save to `MODEL_DIR` (`v_2_word2vec_models`) on the secure volume. |
+| `scripts/w2v_export_v2.py` | reads the v2 models and writes release-safe tables (pair contrasts, neighbours, stability, frequency per million and shift, semantic shift, a small vector matrix per era), six directories all under 1 MB. Lexicon matches the v2 notebook. |
+| `notebooks/SF_word2vec_eras.ipynb`, `scripts/w2v_export.py` | the first lexicon and its export script, kept for the August run's models in `w2v_models` |
 | `notebooks/htrc_bertopic_pipeline.ipynb` | BERTopic over 165-word chunks with an era axis. A preflight cell checks the capsule before anything expensive; embeddings and assignments checkpoint to the secure volume so a killed session resumes. |
 | `notebooks/old_files/` | 2023 exploratory notebooks, kept for reference |
-| `plan.md` | notes on the capsule's Python environments and disk |
 
 Both notebooks share one identical OCR-cleaning cell, run when volumes are loaded. It drops running
 heads and page-number lines, rejoins words hyphenated across line breaks, and drops pages whose
@@ -68,8 +68,8 @@ run on the real text.
 ## Before the secure session (maintenance mode, network on)
 
 Already on the capsule: `~/models/minilm`, NLTK punkt and stopwords, gensim and the BERTopic stack,
-`~/metadata_august2026.csv`. Copy in the two notebooks and `w2v_export.py`. Secure mode has no
-network, so anything missing costs a full mode switch.
+`~/metadata_august2026.csv`. This repo is cloned at `~/Desktop/Clifi-htrc`; `git pull` there while
+the network is on. Secure mode has no network, so anything missing costs a full mode switch.
 
 ## The secure session
 
@@ -78,9 +78,9 @@ First two commands, because the secure volume's size is unknown:
     ls /media/secure_volume
     df -h /media/secure_volume
 
-1. Word2vec, then export immediately. Run `SF_word2vec_eras.ipynb`, then:
+1. Word2vec, then export immediately. Run `SF_word2vec_eras_v2.ipynb`, then:
 
-        python w2v_export.py --models /media/secure_volume/w2v_models --out /media/secure_volume/out_w2v
+        python scripts/w2v_export_v2.py --models /media/secure_volume/v_2_word2vec_models --out /media/secure_volume/out_w2v
 
 2. BERTopic, about 7 hours on the capsule's CPUs. Run it detached so it survives the browser
    session:
