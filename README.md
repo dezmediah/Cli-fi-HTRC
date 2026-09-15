@@ -18,7 +18,7 @@ HTRC review.
 | `source=temple` | 113 volumes Temple digitized and deposited itself (`ppt.ssfcbz…` ids) |
 | years | 1945 to 1980, original printing |
 
-Inside the capsule the text sits at `/data/sf_corpus/<htid>/<page>.txt`, one folder per volume and
+Inside the capsule the text sits at `/media/secure_volume/fa50b375-3216-4edd-a685-98488562b723/<htid>/<page>.txt` (not `/data/sf_corpus`, which loads nothing), one folder per volume and
 one file per page. 2,868 of the volumes had text on the last run.
 
 Eras are cut at two events rather than into equal buckets:
