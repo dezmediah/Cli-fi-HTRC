@@ -133,7 +133,7 @@ ENV_WORD_GROUPS = {
     "contamination": ["contamination", "waste", "smog", "fumes", "chemical", "pesticide", "insecticide",
                        "pollutant", "exhaust", "toxic", "polluted", "pollution"],
     "waste_infrastructure": ["sewer", "sewage", "drainage", "effluent", "runoff", "wastewater",
-                              "cesspool", "sludge", "septic", "cistern", "culvert", "plumbing"],
+                              "cesspool", "sludge", "septic", "plumbing"],
     "population_scarcity": ["overpopulation", "population", "famine", "scarcity", "starvation", "resource", "drought"],
     "energy": ["oil", "fuel", "energy", "coal"],
     "nuclear_atomic": ["radiation", "radioactive", "fallout", "nuclear", "atomic", "bomb", "meltdown"],
