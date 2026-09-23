@@ -122,26 +122,27 @@ def assign_era(year, cutoffs=(1962, 1972), labels=("era_a", "era_b", "era_c")):
 
 
 # ---- keyword list: copied from SF_word2vec_eras_v2.ipynb (cell 520bb515) ----
-# Keep in sync with the notebook if the lexicon changes there.
+# Keep in sync with the notebook if the lexicon changes there. Last synced 2026-09-23
+# (war added to human_agency; power/cycle/ice dropped as too generic).
 
 ENV_WORD_GROUPS = {
     "landscape_baseline": ["river", "creek", "stream", "water", "forest", "nature", "wilderness", "jungle",
                             "ocean", "landscape", "levee", "dam", "reservoir", "estuary", "wetland",
                             "marsh", "watershed"],
-    "ecology_concept": ["ecology", "ecosystem", "environment", "biosphere", "habitat", "balance", "cycle"],
+    "ecology_concept": ["ecology", "ecosystem", "environment", "biosphere", "habitat", "balance"],
     "contamination": ["contamination", "waste", "smog", "fumes", "chemical", "pesticide", "insecticide",
                        "pollutant", "exhaust", "toxic", "polluted", "pollution"],
     "waste_infrastructure": ["sewer", "sewage", "drainage", "effluent", "runoff", "wastewater",
                               "cesspool", "sludge", "septic", "cistern", "culvert", "plumbing"],
     "population_scarcity": ["overpopulation", "population", "famine", "scarcity", "starvation", "resource", "drought"],
-    "energy": ["oil", "fuel", "energy", "coal", "power"],
+    "energy": ["oil", "fuel", "energy", "coal"],
     "nuclear_atomic": ["radiation", "radioactive", "fallout", "nuclear", "atomic", "bomb", "meltdown"],
     "cosmic_natural_causation": ["solar", "cosmic", "celestial", "geological", "planetary"],
-    "human_agency": ["mankind", "humanity", "civilization", "industrial"],
+    "human_agency": ["mankind", "humanity", "civilization", "industrial", "war"],
     "disaster_collapse": ["wasteland", "extinction", "collapse", "barren", "dying", "decay", "catastrophe",
                            "apocalypse", "plague"],
     "climate_weather": ["climate", "weather", "warming", "greenhouse", "atmosphere", "temperature",
-                         "flood", "flooding", "storm", "hurricane", "ice", "glacier", "carbon", "ozone"],
+                         "flood", "flooding", "storm", "hurricane", "glacier", "carbon", "ozone"],
     "space_earth_framing": ["earth", "homeworld", "colony", "frontier", "terraform", "alien"],
 }
 ENV_WORDS = sorted({w for group in ENV_WORD_GROUPS.values() for w in group})

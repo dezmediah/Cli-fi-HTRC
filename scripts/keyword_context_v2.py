@@ -158,28 +158,30 @@ ENV_WORD_GROUPS = {
     "landscape_baseline": ["river", "creek", "stream", "water", "forest", "nature", "wilderness", "jungle",
                             "ocean", "landscape", "levee", "dam", "reservoir", "estuary", "wetland",
                             "marsh", "watershed"],
-    "ecology_concept": ["ecology", "ecosystem", "environment", "biosphere", "habitat", "balance", "cycle"],
+    "ecology_concept": ["ecology", "ecosystem", "environment", "biosphere", "habitat", "balance"],
     "contamination": ["contamination", "waste", "smog", "fumes", "chemical", "pesticide", "insecticide",
                        "pollutant", "exhaust", "toxic", "polluted", "pollution"],
     "waste_infrastructure": ["sewer", "sewage", "drainage", "effluent", "runoff", "wastewater",
                               "cesspool", "sludge", "septic", "cistern", "culvert", "plumbing"],
     "population_scarcity": ["overpopulation", "population", "famine", "scarcity", "starvation", "resource", "drought"],
-    "energy": ["oil", "fuel", "energy", "coal", "power"],
+    "energy": ["oil", "fuel", "energy", "coal"],
     "nuclear_atomic": ["radiation", "radioactive", "fallout", "nuclear", "atomic", "bomb", "meltdown"],
     "cosmic_natural_causation": ["solar", "cosmic", "celestial", "geological", "planetary"],
-    "human_agency": ["mankind", "humanity", "civilization", "industrial"],
+    "human_agency": ["mankind", "humanity", "civilization", "industrial", "war"],
     "disaster_collapse": ["wasteland", "extinction", "collapse", "barren", "dying", "decay", "catastrophe",
                            "apocalypse", "plague"],
     "climate_weather": ["climate", "weather", "warming", "greenhouse", "atmosphere", "temperature",
-                         "flood", "flooding", "storm", "hurricane", "ice", "glacier", "carbon", "ozone"],
+                         "flood", "flooding", "storm", "hurricane", "glacier", "carbon", "ozone"],
     "space_earth_framing": ["earth", "homeworld", "colony", "frontier", "terraform", "alien"],
 }
 
 # Technology lexicon: drafted 2026-09-23, WordNet-audited (each word confirmed a real,
 # cleanly-defined lexical item), reviewed and approved by Dez. Zero overlap with the
-# environmental lexicon above.
+# environmental lexicon above. "machine" dropped 2026-09-23 (too generic -- machine gun,
+# "political machine" -- machinery/mechanical/automaton/automation/automated still cover
+# the theme).
 TECH_WORD_GROUPS = {
-    "automation_machinery": ["machine", "machinery", "mechanical", "automaton", "automation", "automated"],
+    "automation_machinery": ["machinery", "mechanical", "automaton", "automation", "automated"],
     "artificial_beings": ["robot", "android", "cyborg"],
     "computing_electronics": ["computer", "cybernetic", "electronic", "circuitry"],
     "engineering_industry": ["engineering", "engineer", "technology", "technological", "factory"],
