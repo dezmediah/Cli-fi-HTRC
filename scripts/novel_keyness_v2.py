@@ -112,6 +112,26 @@ def load_docs_keep_id(base_dir, dictionary, ids=None, **clean_kwargs):
     return docs
 
 
+def load_metadata(path):
+    """{htid: {title, author, year}}. A handful of htids in metadata_august2026.csv are
+    genuine Ace Doubles / omnibus scans -- one physical volume, one htid, two or three
+    distinct novels by possibly-different authors bound together -- not data-entry
+    duplicates. year is identical across every such group (checked); title and author
+    are joined with " / " rather than picking one and silently losing the other(s)."""
+    df = pd.read_csv(path)
+    df["htid"] = df["htid"].astype(str)
+
+    def join_unique(values):
+        return " / ".join(dict.fromkeys(str(v) for v in values))
+
+    grouped = df.groupby("htid").agg(
+        title=("title", join_unique),
+        author=("author", join_unique),
+        year=("year", "first"),
+    )
+    return grouped.to_dict("index")
+
+
 # ---- era assignment: copied from SF_word2vec_eras_v2.ipynb (cell 7030de76) ----
 
 def assign_era(year, cutoffs=(1962, 1972), labels=("era_a", "era_b", "era_c")):
@@ -184,9 +204,7 @@ def main():
     out_dir = Path(args.out)
     (out_dir / "tables").mkdir(parents=True, exist_ok=True)
 
-    meta = pd.read_csv(args.metadata)
-    meta["htid"] = meta["htid"].astype(str)
-    meta_by_id = meta.set_index("htid").to_dict("index")
+    meta_by_id = load_metadata(args.metadata)
 
     print(f"discovering volumes under {args.text_dir} ...")
     all_volumes = discover_volumes(args.text_dir)
