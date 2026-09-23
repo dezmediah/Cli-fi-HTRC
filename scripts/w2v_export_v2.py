@@ -16,26 +16,28 @@ import numpy as np
 from gensim.models import Word2Vec
 from scipy.linalg import orthogonal_procrustes
 
-# Copied from SF_word2vec_eras_v2.ipynb; keep the two in sync. Last synced 2026-09-23
-# (105 -> 101 words: war added to human_agency; power/cycle/ice/cistern/culvert dropped).
+# Copied from SF_word2vec_eras_v2.ipynb; keep the two in sync. The 2026-09-23 lexicon
+# review (war added, power/cycle/ice/cistern/culvert dropped) applies to
+# novel_keyness_v2.py and keyword_context_v2.py only, not here -- this stays on the
+# original 105-word list the notebook's embeddings analysis already has results from.
 ENV_WORD_GROUPS = {
     "landscape_baseline": ["river", "creek", "stream", "water", "forest", "nature", "wilderness", "jungle",
                            "ocean", "landscape", "levee", "dam", "reservoir", "estuary", "wetland",
                            "marsh", "watershed"],
-    "ecology_concept": ["ecology", "ecosystem", "environment", "biosphere", "habitat", "balance"],
+    "ecology_concept": ["ecology", "ecosystem", "environment", "biosphere", "habitat", "balance", "cycle"],
     "contamination": ["contamination", "waste", "smog", "fumes", "chemical", "pesticide", "insecticide",
                       "pollutant", "exhaust", "toxic", "polluted", "pollution"],
     "waste_infrastructure": ["sewer", "sewage", "drainage", "effluent", "runoff", "wastewater",
-                             "cesspool", "sludge", "septic", "plumbing"],
+                             "cesspool", "sludge", "septic", "cistern", "culvert", "plumbing"],
     "population_scarcity": ["overpopulation", "population", "famine", "scarcity", "starvation", "resource", "drought"],
-    "energy": ["oil", "fuel", "energy", "coal"],
+    "energy": ["oil", "fuel", "energy", "coal", "power"],
     "nuclear_atomic": ["radiation", "radioactive", "fallout", "nuclear", "atomic", "bomb", "meltdown"],
     "cosmic_natural_causation": ["solar", "cosmic", "celestial", "geological", "planetary"],
-    "human_agency": ["mankind", "humanity", "civilization", "industrial", "war"],
+    "human_agency": ["mankind", "humanity", "civilization", "industrial"],
     "disaster_collapse": ["wasteland", "extinction", "collapse", "barren", "dying", "decay", "catastrophe",
                           "apocalypse", "plague"],
     "climate_weather": ["climate", "weather", "warming", "greenhouse", "atmosphere", "temperature",
-                        "flood", "flooding", "storm", "hurricane", "glacier", "carbon", "ozone"],
+                        "flood", "flooding", "storm", "hurricane", "ice", "glacier", "carbon", "ozone"],
     "space_earth_framing": ["earth", "homeworld", "colony", "frontier", "terraform", "alien"],
 }
 WORD_PAIR_CONTRASTS = [
