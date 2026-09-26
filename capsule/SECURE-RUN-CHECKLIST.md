@@ -11,6 +11,21 @@ Clone `~/Desktop/Clifi-htrc` pulled to `1333adb` (PR #3 + PR #4): `scripts/bookn
 `capsule/extras_analysis.py` (reads 125 lexicon words from the v4 notebook on the box) and the
 fixed BERTopic notebook are all present and smoke-tested. Nothing else needs the network.
 
+## How to drive it from the browser
+
+Open Remote Desktop from the HTRC portal, open a terminal (right-click the desktop or the
+Applications menu), and type one short line per step:
+
+```
+bash ~/Desktop/Clifi-htrc/capsule/run_secure.sh look
+```
+Steps in order: `look` → `bertopic` and `keyness` (night 1) → `status` (morning) → `booknlp` →
+`finalize` → `pmi` → `request-b` → `done` → `kwic` → optional `w2v`. Each long step runs in the
+background with a log under `/media/secure_volume/logs/`; `status` shows what is running and the
+log tails. Notebooks run headless as copies on the secure volume, her files untouched, and the
+copies keep every output, including the releaseresults output where a notebook submits itself.
+Nothing needs the Jupyter GUI. The sections below say what each step does.
+
 ## 1. First look after the flip
 
 ```
