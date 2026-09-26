@@ -13,7 +13,7 @@ nb() {  # nb <notebook name> [sed expression applied to the COPY]
   local name=$1 expr=${2:-} run=$SV/run_$1.ipynb
   cp "$R/notebooks/$name.ipynb" "$run" || exit 1
   [ -n "$expr" ] && sed -i "$expr" "$run"
-  nohup "$JUP" nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=-1 "$run" > "$LOG/$name.log" 2>&1 &
+  nohup "$JUP" nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=-1 --ExecutePreprocessor.kernel_name=python3 "$run" > "$LOG/$name.log" 2>&1 &
   echo "started $name, pid $!  log: $LOG/$name.log  executed copy: $run"
 }
 
