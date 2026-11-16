@@ -34,7 +34,7 @@ from gensim.models import Word2Vec
 
 ERAS = ["era_a", "era_b", "era_c"]
 SEEDS = [1, 2, 3]
-DEFAULT_WORDS = ["pollution", "toxic", "climate", "nature", "energy"]
+DEFAULT_WORDS = ["pollution", "toxic", "climate", "nature", "resource"]
 PICKER_LABEL = "Environment"
 
 # Word groups the meaning-profile chart compares each word against. These lists are an
