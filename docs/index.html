@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word Neighbors 1945–1980</title>
+<style>html{color-scheme:light}body{margin:0}</style>
+</head>
+<body>
+<style>
+/* Layout: one picker row, then four stacked cards (neighbors, meaning profile, frequency, books),
+   then a sources block. Quiet neutrals so the four series hues carry the charts. System sans only. */
+:root {
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --s3: #1baf7a;
+  --s4: #eda100;
+  --shadow: 0 4px 14px rgba(11, 11, 11, 0.12);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255, 255, 255, 0.10);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255, 255, 255, 0.10);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--page); color: var(--ink); font-family: var(--font); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1 { font-size: 28px; line-height: 1.15; font-weight: 600; margin: 0; text-wrap: balance; }
+h2 { font-size: 17px; line-height: 1.25; font-weight: 600; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.lede { color: var(--ink2); max-width: 68ch; margin-top: 8px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2); margin-bottom: 6px; }
+
+.filters { display: flex; flex-direction: column; gap: 8px; }
+.fgroup { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fgroup .lbl { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2); flex: 0 0 168px; }
+@media (max-width: 560px) { .fgroup .lbl { flex-basis: 100%; } }
+.chip-btn {
+  font: inherit; font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--axis);
+  border-radius: 999px; padding: 6px 14px; cursor: pointer;
+}
+.chip-btn:hover { background: var(--grid); }
+.chip-btn[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card .sub { color: var(--ink2); max-width: 70ch; }
+.caption { color: var(--ink2); font-size: 12px; max-width: 78ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--ink2); }
+.legend .key { display: inline-flex; align-items: center; gap: 6px; }
+.legend .swatch { display: inline-block; width: 14px; height: 2px; border-radius: 2px; }
+.legend .dotkey { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+
+/* neighbor ladders */
+.ladders { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; }
+.col-head { display: flex; flex-direction: column; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--grid); }
+.col-head strong { font-size: 15px; }
+.col-head .n { font-size: 12px; color: var(--ink2); }
+.ladder { list-style: none; margin: 0; padding: 0; }
+.rung { display: grid; grid-template-columns: 20px minmax(0, 1fr) 84px 38px; align-items: center; gap: 8px; padding: 4px 4px; border-radius: 4px; }
+.rung:hover, .rung:focus-visible { background: var(--page); }
+.rk { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.wd { overflow-wrap: anywhere; }
+.rung.rare .wd { color: var(--ink2); }
+.wd sup { color: var(--muted); margin-left: 1px; }
+.track { position: relative; display: block; height: 14px; margin: 0 6px; }
+.track::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 1px; background: var(--grid); }
+.dot { position: absolute; top: 3px; width: 8px; height: 8px; border-radius: 50%; background: var(--s1); box-shadow: 0 0 0 2px var(--surface); }
+.rung.rare .dot { background: var(--muted); }
+.cv { text-align: right; font-size: 12px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+
+/* line charts */
+.chart { position: relative; min-width: 0; }
+.chart svg { display: block; max-width: 100%; }
+.chart:focus-visible { outline-offset: 4px; }
+svg text { font-family: var(--font); }
+.gridline { stroke: var(--grid); stroke-width: 1; }
+.baseline { stroke: var(--axis); stroke-width: 1; }
+.tick { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.xlab { fill: var(--ink2); font-size: 12px; }
+.endlab { fill: var(--ink2); font-size: 12px; }
+.crosshair { stroke: var(--axis); stroke-width: 1; }
+
+/* books */
+.books { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.book { padding: 6px 8px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; }
+.book:hover, .book:focus-visible { background: var(--page); }
+.bk-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.bk-title { font-weight: 600; overflow-wrap: anywhere; }
+.flag { font-size: 11px; color: var(--ink2); border: 1px solid var(--axis); border-radius: 4px; padding: 0 6px; }
+.bk-meta { color: var(--ink2); font-size: 12px; }
+.bk-bar { display: flex; align-items: center; gap: 8px; }
+.bk-fill { height: 8px; background: var(--s1); border-radius: 0 4px 4px 0; min-width: 2px; }
+.bk-val { font-size: 12px; color: var(--ink2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* table views */
+details { font-size: 12px; color: var(--ink2); }
+summary { cursor: pointer; width: max-content; }
+.tbl-wrap { overflow-x: auto; margin-top: 8px; max-width: 100%; }
+table { border-collapse: collapse; font-size: 12px; min-width: 100%; }
+th, td { text-align: left; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--grid); font-variant-numeric: tabular-nums; vertical-align: top; }
+th { color: var(--ink2); font-weight: 600; white-space: nowrap; }
+
+/* tooltip */
+#tip { position: fixed; z-index: 20; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--axis); border-radius: 6px; box-shadow: var(--shadow); padding: 8px 10px; font-size: 12px; max-width: 280px; }
+.tt-title { font-weight: 600; margin-bottom: 4px; overflow-wrap: anywhere; }
+.tt-row { display: flex; align-items: center; gap: 6px; line-height: 1.5; }
+.tt-row strong { font-weight: 600; font-variant-numeric: tabular-nums; }
+.tt-name { color: var(--ink2); }
+.tt-key { display: inline-block; width: 12px; height: 2px; border-radius: 2px; flex: none; }
+
+.notes ul { margin: 6px 0 0; padding-left: 18px; color: var(--ink2); font-size: 12px; display: flex; flex-direction: column; gap: 4px; max-width: 86ch; }
+.notes h2 { margin-bottom: 2px; }
+</style>
+
+<main class="wrap">
+  <header>
+    <div class="eyebrow">Word2vec models of American science fiction, 2,868 volumes</div>
+    <h1>Word neighbors, 1945–1980</h1>
+    <p class="lede">Three models, trained separately on the volumes published 1945–61, 1962–71 and 1972–80, each run three times. Pick one of five words to see what it sits next to in each period, how its meaning shifts, how often it is used, and which books use it most.</p>
+  </header>
+
+  <div class="filters" id="filters" role="group" aria-label="Choose a word"></div>
+
+  <section class="card" aria-labelledby="h-nbrs">
+    <div>
+      <h2 id="h-nbrs">What it sits next to</h2>
+      <p class="sub">The 20 closest words in each period, with similarity averaged over the three training runs.</p>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span class="key"><span class="dotkey" style="background:var(--s1)"></span>used 20 or more times in that period</span>
+      <span class="key"><span class="dotkey" style="background:var(--muted)"></span>rarer than that</span>
+      <span class="key"><span>†</span>fewer than 20 uses</span>
+      <span class="key"><span>°</span>in the top 20 of at most one run</span>
+    </div>
+    <div class="ladders" id="nbrs-grid"></div>
+    <p class="caption" id="nbrs-cap"></p>
+    <details><summary>Table view</summary><div class="tbl-wrap" id="nbrs-tbl"></div></details>
+  </section>
+
+  <section class="card" aria-labelledby="h-groups">
+    <div>
+      <h2 id="h-groups">Which kind of meaning it leans toward</h2>
+      <p class="sub">Cosine similarity between the word and the average of four word groups. Vertical whiskers span the three training runs.</p>
+    </div>
+    <div class="legend" id="groups-legend"></div>
+    <div class="chart" id="groups-chart" tabindex="0" role="group" aria-label="Line chart of similarity to four word groups by period. Use left and right arrow keys to read each period."></div>
+    <p class="caption">Each group is a fixed list of words, given under Sources. If the chosen word is itself in a group, it is left out of that group's average. Similarity scores shift with how often a word is used, so read the direction of each line more than the absolute level.</p>
+    <details><summary>Table view</summary><div class="tbl-wrap" id="groups-tbl"></div></details>
+  </section>
+
+  <section class="card" aria-labelledby="h-freq">
+    <div>
+      <h2 id="h-freq">How often it is used</h2>
+      <p class="sub">Occurrences per million words in each period.</p>
+    </div>
+    <div class="chart" id="freq-chart" tabindex="0" role="group" aria-label="Line chart of occurrences per million words by period. Use left and right arrow keys to read each period."></div>
+    <details><summary>Table view</summary><div class="tbl-wrap" id="freq-tbl"></div></details>
+  </section>
+
+  <section class="card" aria-labelledby="h-books">
+    <div>
+      <h2 id="h-books">Which books use it most distinctively</h2>
+      <p class="sub">The 10 volumes with the highest log-likelihood score for this word against the rest of the corpus. Bar length is the score; the count is how many times the book uses the word.</p>
+    </div>
+    <ul class="books" id="books"></ul>
+    <p class="caption">The keyness table keeps only the top 15 volumes per word, and only volumes with at least 3 uses, so this view cannot show which books drive an early period where the word is rare. Flags such as "nonfiction" and "edited volume" are my reading of the title and author field and are not verified.</p>
+    <details><summary>Table view</summary><div class="tbl-wrap" id="books-tbl"></div></details>
+  </section>
+
+  <section class="card notes" aria-labelledby="h-src">
+    <h2 id="h-src">Where these numbers come from</h2>
+    <ul>
+      <li><strong>Neighbors and meaning profile:</strong> the nine word2vec models in v_2_word2vec_models (three periods, three random seeds each; 300 dimensions, skip-gram). Similarity is cosine similarity, averaged over the seeds. Neighbors rank by that average.</li>
+      <li><strong>Word groups:</strong> bodily / bacterial = bacterial, bacteria, disease, decay, decomposition, infection, putrid. crowding / population = overpopulation, overcrowding, population explosion, overpopulated. industrial / chemical = chemical, industrial, smog, sewage, factories, fumes. nuclear / radiation = radioactivity, fallout, radiation, radioactive, nuclear, atomic. I chose these lists; changing them changes the lines.</li>
+      <li><strong>Frequency:</strong> counts from each model's vocabulary, per million tokens. Each period was subsampled to the same size (about 54 million tokens) before training, and frequent word pairs such as "nuclear war" were merged into one token first, so counts can run slightly below raw text counts. For the words in out_w2v_v2/tables/freq.csv the figures are identical to that file.</li>
+      <li><strong>Books:</strong> novel_keyness_top_by_word.csv, Dunning G2 of each volume against the rest of the corpus (minimum 3 uses, top 15 per word kept). It covers the 101 environmental seed words. Volumes that bind several novels under one HathiTrust ID show their titles joined with a slash.</li>
+      <li><strong>Periods:</strong> 1945–61 (before Silent Spring), 1962–71, 1972–80 (Clean Water Act onward).</li>
+    </ul>
+  </section>
+</main>
+
+<div id="tip" role="tooltip" hidden></div>
+
+<script>
+const DATA = {"words": ["pollution", "toxic", "climate", "nature", "energy"], "picker": [{"label": "Environment", "words": ["pollution", "toxic", "climate", "nature", "energy"]}], "w": {"pollution": {"nbrs": {"era_a": [["bacterial", 0.742, 3, 34], ["degeneracy", 0.726, 3, 30], ["evaporation", 0.724, 3, 44], ["sufficient quantity", 0.721, 3, 16], ["pollute", 0.716, 2, 19], ["decomposition", 0.715, 2, 51], ["waste products", 0.712, 3, 23], ["ensues", 0.712, 3, 15], ["decompose", 0.709, 2, 25], ["precipitation", 0.709, 3, 55], ["toxin", 0.709, 3, 23], ["nutriment", 0.708, 2, 18], ["harmful bacteria", 0.708, 2, 6], ["overcrowding", 0.705, 2, 21], ["excretion", 0.704, 2, 16], ["utilization", 0.703, 1, 31], ["nutritive", 0.701, 1, 13], ["superfluity", 0.699, 2, 22], ["incurable diseases", 0.695, 1, 7], ["toxins", 0.695, 2, 14]], "era_b": [["overpopulation", 0.707, 3, 84], ["population explosion", 0.706, 3, 76], ["air pollution", 0.674, 3, 48], ["overcrowding", 0.667, 3, 51], ["capitalist countries", 0.646, 3, 10], ["internecine", 0.644, 2, 15], ["pollutants", 0.639, 3, 18], ["inequities", 0.637, 3, 21], ["industrialization", 0.636, 1, 25], ["food production", 0.635, 3, 32], ["lawlessness", 0.635, 2, 40], ["epidemics", 0.635, 3, 42], ["outflow", 0.635, 3, 39], ["ecological balance", 0.626, 2, 22], ["population growth", 0.626, 2, 28], ["stagnation", 0.626, 2, 59], ["nationalization", 0.624, 1, 26], ["nuclear holocaust", 0.621, 2, 32], ["illiteracy", 0.62, 0, 28], ["escalated", 0.62, 1, 19]], "era_c": [["overpopulation", 0.647, 3, 71], ["pollutants", 0.611, 3, 42], ["radioactivity", 0.608, 3, 122], ["stagnation", 0.607, 3, 42], ["air pollution", 0.604, 3, 37], ["radioactive waste", 0.604, 3, 19], ["natural resources", 0.603, 3, 74], ["scarcity", 0.601, 2, 72], ["industrial wastes", 0.6, 3, 12], ["overcrowding", 0.599, 3, 29], ["polluting", 0.592, 2, 57], ["carcinogens", 0.589, 3, 16], ["fossil fuels", 0.586, 2, 37], ["oil spills", 0.585, 3, 14], ["oil shortage", 0.583, 1, 7], ["wastage", 0.581, 1, 19], ["forest fires", 0.581, 2, 29], ["food shortages", 0.579, 2, 21], ["effluent", 0.576, 1, 22], ["droughts", 0.575, 1, 40]]}, "uses": {"era_a": 40, "era_b": 150, "era_c": 453}, "groups": {"bodily": {"era_a": [0.786, 0.777, 0.793], "era_b": [0.63, 0.619, 0.647], "era_c": [0.545, 0.539, 0.552]}, "crowding": {"era_a": [0.718, 0.706, 0.738], "era_b": [0.759, 0.745, 0.767], "era_c": [0.657, 0.649, 0.668]}, "industrial": {"era_a": [0.584, 0.578, 0.592], "era_b": [0.663, 0.651, 0.678], "era_c": [0.633, 0.627, 0.641]}, "nuclear": {"era_a": [0.6, 0.598, 0.603], "era_b": [0.624, 0.617, 0.632], "era_c": [0.61, 0.606, 0.616]}}, "freq": {"era_a": [40, 0.74], "era_b": [150, 2.78], "era_c": [453, 8.4]}, "novels": [["Exploring New Ethics for Survival: The Voyage of the Spaceship Beagle", "Garrett Hardin", 1972, "era_c", 87, 9.86, 741.5, "nonfiction"], ["The End of the Dream", "Philip Wylie", 1972, "era_c", 29, 3.88, 191.9, ""], ["Heat", "Arthur Herzog", 1977, "era_c", 28, 3.54, 180.2, ""], ["Triage", "Leonard C. Lewin", 1972, "era_c", 26, 4.13, 175.1, ""], ["Brave Old World", "Philippe Curval", 1976, "era_c", 28, 3.16, 173.9, ""], ["1989: Population Doomsday", "Don Pendleton", 1970, "era_b", 19, 3.83, 125.1, ""], ["Ecotopia", "Ernest Callenbach", 1975, "era_c", 16, 2.44, 91.1, ""], ["Ecotopia: the Notebooks and Reports of William Weston", "Ernest Callenbach", 1975, "era_c", 16, 2.4, 90.6, ""], ["The universe makers; science fiction today / by Donald A. Wollheim.", "Wollheim, Donald A.", 1971, "era_b", 14, 3.22, 87.3, "nonfiction"], ["The Tsaddik of the Seven Wonders", "Isidore Haiblum", 1971, "era_b", 13, 2.97, 79.0, ""]]}, "toxic": {"nbrs": {"era_a": [["bacterial", 0.79, 3, 34], ["fluorine", 0.762, 3, 30], ["enzymes", 0.755, 3, 18], ["pathogenic", 0.751, 3, 11], ["virulent", 0.75, 3, 73], ["toxin", 0.745, 3, 23], ["waste products", 0.739, 3, 23], ["bacilli", 0.736, 2, 22], ["vascular", 0.736, 2, 9], ["soluble", 0.736, 1, 26], ["trace elements", 0.734, 2, 8], ["mutate", 0.734, 3, 22], ["disease germs", 0.729, 2, 16], ["chloride", 0.729, 2, 18], ["infections", 0.729, 1, 30], ["impurities", 0.727, 1, 27], ["nutritive", 0.727, 1, 13], ["metalloids", 0.727, 2, 5], ["bubonic", 0.726, 2, 13], ["viral", 0.725, 1, 6]], "era_b": [["electrical discharge", 0.775, 3, 17], ["ionization", 0.745, 3, 37], ["mutagenic", 0.742, 3, 6], ["toxins", 0.739, 3, 24], ["radioactive fallout", 0.737, 3, 19], ["eruptions", 0.735, 2, 34], ["infections", 0.733, 2, 46], ["counteracted", 0.732, 2, 14], ["antibody", 0.732, 2, 23], ["addictive", 0.729, 3, 36], ["cosmic radiation", 0.729, 2, 17], ["gamma rays", 0.729, 2, 37], ["gasses", 0.726, 2, 28], ["gamma radiation", 0.725, 1, 13], ["impurities", 0.724, 2, 49], ["organic matter", 0.722, 2, 35], ["cosmic rays", 0.721, 2, 29], ["corpuscles", 0.72, 1, 22], ["evaporation", 0.72, 1, 64], ["hallucinogenic", 0.72, 1, 23]], "era_c": [["noxious", 0.703, 3, 84], ["virulent", 0.702, 3, 59], ["carcinogens", 0.693, 3, 16], ["carbon monoxide", 0.687, 3, 65], ["soluble", 0.683, 3, 19], ["corrosive", 0.682, 3, 74], ["bacilli", 0.676, 3, 19], ["carbon dioxide", 0.676, 3, 113], ["hallucinogenic", 0.674, 3, 42], ["toxins", 0.674, 3, 45], ["ionized", 0.673, 3, 19], ["corrosion", 0.67, 3, 45], ["industrial wastes", 0.668, 3, 12], ["residues", 0.665, 2, 29], ["combustion", 0.664, 1, 42], ["radioactive", 0.664, 2, 180], ["gaseous", 0.663, 2, 56], ["sulphuric acid", 0.652, 2, 12], ["sulfur dioxide", 0.651, 1, 9], ["gases", 0.65, 1, 229]]}, "uses": {"era_a": 50, "era_b": 68, "era_c": 124}, "groups": {"bodily": {"era_a": [0.794, 0.789, 0.799], "era_b": [0.795, 0.78, 0.81], "era_c": [0.722, 0.715, 0.727]}, "crowding": {"era_a": [0.68, 0.663, 0.703], "era_b": [0.659, 0.649, 0.673], "era_c": [0.594, 0.586, 0.601]}, "industrial": {"era_a": [0.616, 0.607, 0.621], "era_b": [0.694, 0.683, 0.71], "era_c": [0.604, 0.596, 0.615]}, "nuclear": {"era_a": [0.65, 0.637, 0.658], "era_b": [0.718, 0.702, 0.73], "era_c": [0.668, 0.655, 0.678]}}, "freq": {"era_a": [50, 0.93], "era_b": [68, 1.26], "era_c": [124, 2.3]}, "novels": [["The Swarm", "Arthur Herzog", 1974, "era_c", 20, 3.25, 168.9, ""], ["The End of the Dream", "Philip Wylie", 1972, "era_c", 18, 2.41, 141.2, ""], ["The Book of Rack the Healer", "Zach Hughes", 1973, "era_c", 15, 3.33, 127.2, ""], ["Altered States", "Paddy Chayefsky", 1978, "era_c", 7, 1.47, 47.9, ""], ["Dance with the Devil: A Dramatic Encounter", "G√ºnther Schwab", 1958, "era_a", 7, 0.91, 41.2, ""], ["Crystal Phoenix", "Michael Berlyn", 1980, "era_c", 6, 1.09, 37.5, ""], ["Flow My Tears, the Policeman Said", "Philip K. Dick", 1974, "era_c", 6, 0.9, 35.2, ""], ["Motorman", "David Ohle", 1972, "era_c", 4, 1.52, 27.6, ""], ["The Godwhale", "T. J. Bass", 1974, "era_c", 5, 0.57, 24.8, ""], ["On the Symb-Socket Circuit", "Kenneth Bulmer", 1972, "era_c", 4, 0.95, 23.9, ""]]}, "climate": {"nbrs": {"era_a": [["climatic conditions", 0.592, 3, 19], ["climates", 0.588, 3, 39], ["humidity", 0.587, 3, 126], ["temperate", 0.582, 3, 54], ["salubrious", 0.566, 3, 23], ["temperate zones", 0.56, 3, 10], ["environment", 0.56, 3, 890], ["tropics", 0.56, 3, 112], ["atmospheric conditions", 0.558, 3, 22], ["weather conditions", 0.554, 3, 20], ["weather", 0.544, 3, 2663], ["polar regions", 0.538, 2, 33], ["social structure", 0.534, 2, 49], ["healthful", 0.533, 2, 33], ["topography", 0.533, 2, 52], ["optimal", 0.527, 2, 6], ["southern latitudes", 0.526, 2, 8], ["unhealthful", 0.522, 2, 9], ["climes", 0.521, 1, 20], ["rainfall", 0.519, 2, 55]], "era_b": [["climates", 0.584, 3, 40], ["atmospheric conditions", 0.575, 3, 19], ["weather", 0.573, 3, 2828], ["temperate", 0.556, 3, 59], ["environment", 0.547, 3, 1287], ["biosphere", 0.54, 3, 20], ["natural resources", 0.54, 3, 64], ["greenhouse effect", 0.539, 2, 8], ["ecological balance", 0.536, 3, 22], ["rigours", 0.534, 2, 12], ["paleocene", 0.532, 3, 29], ["conditions", 0.532, 3, 2072], ["temperate zone", 0.529, 2, 20], ["climatic conditions", 0.529, 3, 14], ["environments", 0.529, 1, 64], ["environmental conditions", 0.529, 2, 12], ["moral climate", 0.529, 1, 8], ["habitat", 0.526, 2, 70], ["adapt themselves", 0.526, 2, 14], ["tropics", 0.522, 1, 97]], "era_c": [["weather", 0.649, 3, 3195], ["climates", 0.644, 3, 40], ["conditions", 0.593, 3, 1818], ["weather conditions", 0.588, 3, 38], ["temperate", 0.587, 3, 70], ["greenhouse effect", 0.586, 3, 22], ["humidity", 0.584, 3, 155], ["northern hemisphere", 0.578, 3, 89], ["climatic changes", 0.567, 3, 12], ["rainfall", 0.563, 3, 81], ["overcrowding", 0.552, 2, 29], ["tropics", 0.55, 2, 97], ["earthlike", 0.548, 3, 27], ["political situation", 0.547, 3, 79], ["environment", 0.544, 2, 1110], ["prevailing", 0.54, 2, 108], ["milder", 0.539, 2, 53], ["atmosphere", 0.539, 1, 2216], ["infant mortality", 0.539, 1, 20], ["climatic conditions", 0.536, 1, 11]]}, "uses": {"era_a": 661, "era_b": 620, "era_c": 631}, "groups": {"bodily": {"era_a": [0.472, 0.458, 0.493], "era_b": [0.46, 0.452, 0.47], "era_c": [0.467, 0.452, 0.484]}, "crowding": {"era_a": [0.52, 0.51, 0.528], "era_b": [0.532, 0.524, 0.548], "era_c": [0.582, 0.576, 0.585]}, "industrial": {"era_a": [0.433, 0.423, 0.444], "era_b": [0.437, 0.418, 0.448], "era_c": [0.472, 0.456, 0.487]}, "nuclear": {"era_a": [0.433, 0.416, 0.465], "era_b": [0.419, 0.404, 0.434], "era_c": [0.507, 0.498, 0.518]}}, "freq": {"era_a": [661, 12.26], "era_b": [620, 11.5], "era_c": [631, 11.7]}, "novels": [["Heat", "Arthur Herzog", 1977, "era_c", 105, 13.27, 779.2, ""], ["The Martian Inca", "Ian Watson", 1977, "era_c", 20, 3.06, 90.3, ""], ["The Earth Is Your Spaceship: \"The Story of Man\"", "Nat Dring", 1967, "era_b", 18, 2.89, 79.2, ""], ["Fire and Ice", "Ray Kytle", 1975, "era_c", 15, 2.62, 63.2, ""], ["Doctor Dolittle and the Secret Lake", "Hugh Lofting", 1948, "era_a", 15, 1.58, 49.0, ""], ["My Journeys with Astargo: A Tale of Past, Present and Future", "Perl T. Barnhouse", 1952, "era_a", 12, 1.64, 39.9, ""], ["Looking Beyond", "Lin Yutang", 1955, "era_a", 14, 1.12, 36.9, ""], ["After 12,000 Years", "Stanton A. Coblentz", 1950, "era_a", 11, 1.64, 36.6, ""], ["The Sixth Winter", "John Gribbin & Douglas Orgill", 1979, "era_c", 13, 1.2, 35.9, ""], ["The Weathermakers", "Ben Bova", 1967, "era_b", 10, 1.72, 34.2, ""]]}, "nature": {"nbrs": {"era_a": [["exact nature", 0.59, 3, 46], ["physical laws", 0.585, 3, 22], ["laws governing", 0.583, 3, 13], ["natural law", 0.579, 3, 101], ["fallibility", 0.579, 2, 22], ["animal instinct", 0.574, 2, 21], ["nurture", 0.573, 3, 26], ["immutability", 0.57, 2, 11], ["universal law", 0.568, 3, 16], ["imperfections", 0.568, 2, 43], ["spirituality", 0.567, 1, 28], ["instinctual", 0.566, 1, 21], ["partakes", 0.565, 2, 9], ["creativeness", 0.563, 2, 8], ["perversion", 0.56, 2, 70], ["meaninglessness", 0.558, 1, 20], ["ultimate purpose", 0.557, 1, 23], ["sensory perception", 0.557, 0, 8], ["moral judgment", 0.557, 0, 17], ["physical manifestation", 0.556, 1, 7]], "era_b": [["motivations", 0.564, 2, 81], ["decencies", 0.561, 2, 28], ["scientific curiosity", 0.56, 2, 28], ["human nature", 0.559, 2, 232], ["regressive", 0.559, 2, 23], ["original sin", 0.559, 3, 65], ["ontological", 0.558, 2, 28], ["upright dishonesty", 0.557, 2, 10], ["ultimate success", 0.557, 3, 10], ["natural laws", 0.556, 2, 54], ["inexorable laws", 0.555, 2, 7], ["vaneyism", 0.555, 1, 12], ["irrationality", 0.553, 2, 46], ["determinism", 0.553, 1, 25], ["nurture", 0.553, 1, 35], ["psychical", 0.552, 2, 23], ["physical laws", 0.551, 2, 28], ["ordinariness", 0.55, 1, 30], ["unchangeable", 0.55, 1, 25], ["highest form", 0.55, 0, 28]], "era_c": [["human nature", 0.619, 3, 208], ["exact nature", 0.605, 3, 25], ["dynamism", 0.596, 3, 20], ["uniqueness", 0.592, 3, 59], ["superior intelligence", 0.588, 3, 18], ["duality", 0.588, 3, 49], ["natural laws", 0.584, 2, 35], ["modern society", 0.582, 2, 19], ["intents", 0.581, 1, 12], ["conceptions", 0.581, 3, 42], ["randomness", 0.579, 2, 30], ["social laws", 0.578, 2, 67], ["omniscience", 0.575, 1, 40], ["ibanism", 0.575, 2, 43], ["mutability", 0.574, 1, 17], ["civilized society", 0.574, 1, 17], ["transgressed", 0.573, 2, 25], ["natures", 0.572, 1, 111], ["behavior patterns", 0.572, 1, 20], ["objective reality", 0.572, 1, 22]]}, "uses": {"era_a": 7018, "era_b": 5754, "era_c": 5937}, "groups": {"bodily": {"era_a": [0.417, 0.398, 0.434], "era_b": [0.425, 0.407, 0.44], "era_c": [0.397, 0.384, 0.404]}, "crowding": {"era_a": [0.491, 0.477, 0.502], "era_b": [0.478, 0.455, 0.493], "era_c": [0.517, 0.506, 0.53]}, "industrial": {"era_a": [0.303, 0.3, 0.31], "era_b": [0.284, 0.278, 0.289], "era_c": [0.297, 0.29, 0.307]}, "nuclear": {"era_a": [0.356, 0.349, 0.364], "era_b": [0.331, 0.318, 0.343], "era_c": [0.35, 0.339, 0.362]}}, "freq": {"era_a": [7018, 130.14], "era_b": [5754, 106.75], "era_c": [5937, 110.09]}, "novels": [["All and Everything: Beelzebub's Tales to His Grandson", "G. Gurdjieff", 1950, "era_a", 228, 6.29, 403.4, ""], ["The Book of Rack the Healer", "Zach Hughes", 1973, "era_c", 93, 20.66, 361.6, ""], ["Dance with the Devil: A Dramatic Encounter", "G√ºnther Schwab", 1958, "era_a", 107, 13.9, 337.2, ""], ["Change Song", "Lee Hoffman", 1972, "era_c", 88, 14.37, 282.6, ""], ["Across the Borderline", "Charles V. P. Young", 1946, "era_a", 67, 24.18, 280.5, ""], ["Atlas Shrugged", "Ayn Rand", 1957, "era_a", 231, 4.18, 262.4, ""], ["Soaring Sunward: Woman's Initiation", "Jeanne Adriel", 1961, "era_a", 86, 12.02, 248.1, ""], ["Looking Beyond", "Lin Yutang", 1955, "era_a", 103, 8.22, 228.2, ""], ["Orwell's Nineteen Eighty-Four: Text, Sources, Criticism", "George Orwell", 1949, "era_a", 121, 5.86, 199.8, ""], ["I Was Alone: A Novel of Life on Earth and Elsewhere", "Joe H. LePire", 1963, "era_b", 67, 11.04, 183.0, ""]]}, "energy": {"nbrs": {"era_a": [["energies", 0.658, 3, 399], ["nervous energy", 0.616, 3, 51], ["pure energy", 0.616, 3, 42], ["kinetic energy", 0.616, 3, 61], ["molecular rays", 0.597, 3, 17], ["electrical energy", 0.582, 3, 23], ["every erg", 0.582, 3, 9], ["electrical power", 0.579, 3, 28], ["radiant energy", 0.577, 3, 38], ["solar energy", 0.576, 3, 31], ["converters", 0.574, 3, 70], ["force", 0.573, 3, 8578], ["molecular motion", 0.573, 2, 23], ["power", 0.57, 2, 17059], ["accumulators", 0.57, 2, 79], ["molecular drive", 0.57, 2, 22], ["ions", 0.57, 3, 55], ["magnetic field", 0.568, 2, 106], ["molecular ray", 0.562, 1, 46], ["generating", 0.562, 1, 64]], "era_b": [["energies", 0.682, 3, 507], ["kinetic energy", 0.597, 3, 20], ["vitality", 0.593, 3, 451], ["electrical energy", 0.591, 3, 25], ["psychic energy", 0.585, 3, 23], ["radiant energy", 0.579, 3, 27], ["strength", 0.572, 3, 6124], ["compression", 0.568, 3, 60], ["hydrogen", 0.568, 3, 326], ["photons", 0.558, 2, 40], ["electromagnetic energy", 0.555, 3, 7], ["nervous energy", 0.552, 3, 23], ["every ounce", 0.551, 3, 100], ["expend", 0.548, 2, 58], ["ergs", 0.546, 2, 13], ["willpower", 0.546, 1, 53], ["converters", 0.543, 1, 33], ["torus", 0.542, 1, 27], ["limited range", 0.539, 2, 20], ["magnetism", 0.537, 1, 88]], "era_c": [["energies", 0.674, 3, 541], ["nervous energy", 0.59, 3, 37], ["kinetic energy", 0.584, 3, 21], ["strength", 0.582, 3, 7025], ["electrical power", 0.574, 3, 55], ["electrical energy", 0.572, 3, 27], ["enormous amounts", 0.569, 3, 9], ["psychic energy", 0.564, 3, 34], ["solar energy", 0.564, 3, 65], ["propellant", 0.562, 3, 36], ["vast amounts", 0.558, 3, 16], ["surplus energy", 0.549, 3, 12], ["power", 0.547, 3, 17420], ["willpower", 0.545, 3, 48], ["resources", 0.545, 2, 978], ["deuterium", 0.541, 1, 31], ["electrons", 0.539, 2, 128], ["selyn", 0.539, 1, 133], ["mental effort", 0.536, 0, 23], ["electromagnetic fields", 0.535, 2, 16]]}, "uses": {"era_a": 3686, "era_b": 3723, "era_c": 4925}, "groups": {"bodily": {"era_a": [0.408, 0.395, 0.428], "era_b": [0.388, 0.378, 0.396], "era_c": [0.352, 0.349, 0.357]}, "crowding": {"era_a": [0.432, 0.421, 0.447], "era_b": [0.382, 0.369, 0.391], "era_c": [0.431, 0.429, 0.432]}, "industrial": {"era_a": [0.421, 0.406, 0.437], "era_b": [0.416, 0.409, 0.424], "era_c": [0.423, 0.419, 0.429]}, "nuclear": {"era_a": [0.529, 0.513, 0.544], "era_b": [0.516, 0.499, 0.527], "era_c": [0.498, 0.481, 0.507]}}, "freq": {"era_a": [3686, 68.35], "era_b": [3723, 69.07], "era_c": [4925, 91.32]}, "novels": [["Invaders from the Infinite", "John W. Campbell, Jr.", 1961, "era_a", 203, 31.84, 1061.1, ""], ["Cosmic Engineers", "Clifford D. Simak", 1950, "era_a", 106, 20.65, 464.8, ""], ["The Gods Themselves", "Isaac Asimov", 1972, "era_c", 106, 12.3, 361.2, ""], ["Balls\\!", "Richard Rohmer", 1979, "era_c", 102, 11.88, 341.0, ""], ["The Mightiest Machine", "John W. Campbell, Jr.", 1947, "era_a", 90, 15.0, 340.0, ""], ["Up the Walls of the World", "James Tiptree, Jr.", 1978, "era_c", 102, 10.01, 308.9, ""], ["Supermind", "A. E. van Vogt", 1977, "era_c", 78, 13.17, 275.6, ""], ["The Invincible", "Stanislaw Lem", 1964, "era_b", 73, 10.84, 231.6, ""], ["The best of Destinies / edited by James Baen.", "", 1980, "era_c", 74, 10.21, 226.6, "edited volume"], ["Macrolife: A Mobile Utopia", "George Zebrowski", 1979, "era_c", 85, 7.64, 215.9, ""]]}}};
+
+const ERAS = [
+  { id: "era_a", label: "1945–61" },
+  { id: "era_b", label: "1962–71" },
+  { id: "era_c", label: "1972–80" },
+];
+const eraLabel = id => (ERAS.find(e => e.id === id) || {}).label || id;
+const GROUPS = [
+  { k: "bodily", label: "bodily / bacterial", c: 1 },
+  { k: "crowding", label: "crowding / population", c: 2 },
+  { k: "industrial", label: "industrial / chemical", c: 3 },
+  { k: "nuclear", label: "nuclear / radiation", c: 4 },
+];
+
+const $ = (sel, root = document) => root.querySelector(sel);
+
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  if (props) for (const [k, v] of Object.entries(props)) {
+    if (k === "class") e.className = v;
+    else if (k === "text") e.textContent = v;
+    else e.setAttribute(k, v);
+  }
+  for (const kid of kids) {
+    if (kid == null) continue;
+    e.append(typeof kid === "object" ? kid : document.createTextNode(kid));
+  }
+  return e;
+}
+const NS = "http://www.w3.org/2000/svg";
+function sv(tag, attrs) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v);
+  return e;
+}
+const fmtInt = n => n.toLocaleString("en-US");
+
+/* ---------- tooltip ---------- */
+const tip = $("#tip");
+function showTip(clientX, clientY, title, rows) {
+  tip.replaceChildren();
+  if (title) tip.append(h("div", { class: "tt-title", text: title }));
+  for (const r of rows) {
+    const line = h("div", { class: "tt-row" });
+    if (r.key != null) { const k = h("span", { class: "tt-key" }); k.style.background = `var(--s${r.key})`; line.append(k); }
+    line.append(h("strong", { text: r.value }), h("span", { class: "tt-name", text: r.name }));
+    tip.append(line);
+  }
+  tip.hidden = false;
+  const w = tip.offsetWidth, ht = tip.offsetHeight;
+  let x = clientX + 14, y = clientY + 14;
+  if (x + w > window.innerWidth - 8) x = Math.max(8, clientX - w - 14);
+  if (y + ht > window.innerHeight - 8) y = Math.max(8, clientY - ht - 14);
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+const hideTip = () => { tip.hidden = true; };
+function wireTip(el, getContent) {
+  const show = (cx, cy) => { const c = getContent(); showTip(cx, cy, c.title, c.rows); };
+  el.addEventListener("pointermove", ev => show(ev.clientX, ev.clientY));
+  el.addEventListener("pointerleave", hideTip);
+  el.addEventListener("focus", () => { const r = el.getBoundingClientRect(); show(r.left + 24, r.bottom - 4); });
+  el.addEventListener("blur", hideTip);
+}
+
+/* ---------- table helper ---------- */
+function table(host, head, rows) {
+  host.replaceChildren();
+  const t = h("table");
+  const thead = h("thead"), hr = h("tr");
+  head.forEach(x => hr.append(h("th", { scope: "col", text: x })));
+  thead.append(hr); t.append(thead);
+  const tb = h("tbody");
+  rows.forEach(r => { const tr = h("tr"); r.forEach(c => tr.append(h("td", { text: String(c) }))); tb.append(tr); });
+  t.append(tb); host.append(t);
+}
+
+/* ---------- 1. neighbor ladders ---------- */
+function renderNbrs(w) {
+  const d = DATA.w[w];
+  const grid = $("#nbrs-grid"); grid.replaceChildren();
+  for (const e of ERAS) {
+    const rows = d.nbrs[e.id];
+    const vals = rows.map(r => r[1]);
+    const lo = Math.min(...vals), hi = Math.max(...vals), span = hi - lo || 1;
+    const col = h("div", null,
+      h("div", { class: "col-head" },
+        h("strong", { text: e.label }),
+        h("span", { class: "n", text: `${fmtInt(d.uses[e.id])} uses of “${w}”` })));
+    const ol = h("ol", { class: "ladder" });
+    rows.forEach((r, i) => {
+      const [word, cos, seeds, count] = r;
+      const rare = count < 20, weak = seeds <= 1;
+      const li = h("li", { class: "rung" + (rare ? " rare" : ""), tabindex: "0" });
+      const dot = h("span", { class: "dot" });
+      dot.style.left = `calc(${((cos - lo) / span) * 100}% - 4px)`;
+      const track = h("span", { class: "track" }, dot);
+      li.append(
+        h("span", { class: "rk", text: String(i + 1) }),
+        h("span", { class: "wd" }, word, rare ? h("sup", { text: "†" }) : null, weak ? h("sup", { text: "°" }) : null),
+        track,
+        h("span", { class: "cv", text: cos.toFixed(2) }));
+      wireTip(li, () => ({
+        title: word,
+        rows: [
+          { value: cos.toFixed(3), name: "mean cosine similarity" },
+          { value: `${seeds} of 3`, name: "runs list it in their top 20" },
+          { value: fmtInt(count), name: `uses in ${e.label}` },
+        ],
+      }));
+      ol.append(li);
+    });
+    col.append(ol); grid.append(col);
+  }
+  const few = ERAS.filter(e => d.uses[e.id] < 100).map(e => `${e.label} (${fmtInt(d.uses[e.id])} uses)`);
+  $("#nbrs-cap").textContent =
+    "The dot shows where each word falls between the lowest and highest similarity in its own column, so compare ranks across periods, not dot positions. " +
+    (few.length ? `Few uses in ${few.join(" and ")}: those neighbors can come from one or two books.` : "");
+  table($("#nbrs-tbl"), ["Rank", ...ERAS.map(e => e.label + " (word, mean cosine, runs, uses)")],
+    Array.from({ length: 20 }, (_, i) => [i + 1, ...ERAS.map(e => {
+      const r = d.nbrs[e.id][i]; return r ? `${r[0]}, ${r[1].toFixed(3)}, ${r[2]}/3, ${fmtInt(r[3])}` : "";
+    })]));
+}
+
+/* ---------- line chart ---------- */
+function niceTicks(min, max, target = 5) {
+  const raw = (max - min) / target, mag = 10 ** Math.floor(Math.log10(raw)), n = raw / mag;
+  const step = (n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10) * mag;
+  const out = [];
+  for (let v = Math.ceil(min / step - 1e-9) * step; v <= max + 1e-9; v += step) out.push(+v.toFixed(10));
+  return out;
+}
+
+let chartState = new Map();
+function drawLines(host, cfg) {
+  chartState.set(host.id, cfg);
+  host.replaceChildren();
+  const W = Math.max(300, host.clientWidth || 640), H = 300;
+  const m = { l: 48, r: 24, t: 14, b: 34 };
+  const y = v => m.t + (1 - (v - cfg.ymin) / (cfg.ymax - cfg.ymin)) * (H - m.t - m.b);
+
+  // direct labels only if the end labels would not collide
+  const ends = cfg.series.map(s => ({ s, y: y(s.points[s.points.length - 1].y) })).sort((a, b) => a.y - b.y);
+  const labelsOK = cfg.labels && ends.every((e, i) => i === 0 || e.y - ends[i - 1].y >= 14);
+  if (labelsOK) m.r = 92;
+
+  const padX = 28, n = cfg.series[0].points.length;
+  const x = i => m.l + padX + i * (W - m.l - m.r - 2 * padX) / (n - 1);
+
+  const svg = sv("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": cfg.aria });
+  for (const t of niceTicks(cfg.ymin, cfg.ymax)) {
+    svg.append(sv("line", { class: "gridline", x1: m.l, x2: W - m.r, y1: y(t), y2: y(t) }));
+    const tl = sv("text", { class: "tick", x: m.l - 8, y: y(t) + 4, "text-anchor": "end" }); tl.textContent = cfg.fmt(t); svg.append(tl);
+  }
+  svg.append(sv("line", { class: "baseline", x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b }));
+  ERAS.forEach((e, i) => { const t = sv("text", { class: "xlab", x: x(i), y: H - 10, "text-anchor": "middle" }); t.textContent = e.label; svg.append(t); });
+
+  const cross = sv("line", { class: "crosshair", y1: m.t, y2: H - m.b, x1: 0, x2: 0 }); cross.style.display = "none"; svg.append(cross);
+
+  for (const s of cfg.series) {
+    const col = `var(--s${s.color})`;
+    const d = s.points.map((p, i) => `${i ? "L" : "M"}${x(i)},${y(p.y)}`).join(" ");
+    const path = sv("path", { d, fill: "none", "stroke-width": 2, "stroke-linecap": "round", "stroke-linejoin": "round" }); path.style.stroke = col; svg.append(path);
+    s.points.forEach((p, i) => {
+      if (p.lo != null && p.hi - p.lo > 0.0005) {
+        const wh = sv("line", { x1: x(i), x2: x(i), y1: y(p.lo), y2: y(p.hi), "stroke-width": 1.5, opacity: 0.55 }); wh.style.stroke = col; svg.append(wh);
+        for (const yy of [p.lo, p.hi]) { const cap = sv("line", { x1: x(i) - 4, x2: x(i) + 4, y1: y(yy), y2: y(yy), "stroke-width": 1.5, opacity: 0.55 }); cap.style.stroke = col; svg.append(cap); }
+      }
+    });
+    s.points.forEach((p, i) => { const c = sv("circle", { cx: x(i), cy: y(p.y), r: 4, "stroke-width": 2 }); c.style.fill = col; c.style.stroke = "var(--surface)"; svg.append(c); });
+  }
+  if (labelsOK) for (const e of ends) { const t = sv("text", { class: "endlab", x: x(n - 1) + 12, y: e.y + 4 }); t.textContent = e.s.short; svg.append(t); }
+
+  const overlay = sv("rect", { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent" });
+  svg.append(overlay); host.append(svg);
+
+  const nearest = px => { let b = 0, bd = 1e9; for (let i = 0; i < n; i++) { const dd = Math.abs(px - x(i)); if (dd < bd) { bd = dd; b = i; } } return b; };
+  const show = (i, cx, cy) => {
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.style.display = "";
+    showTip(cx, cy, ERAS[i].label, cfg.series.map(s => ({ key: cfg.single ? 1 : s.color, value: cfg.fmt(s.points[i].y), name: s.name + (s.points[i].note ? ` (${s.points[i].note})` : "") })));
+  };
+  overlay.addEventListener("pointermove", ev => { const r = svg.getBoundingClientRect(); show(nearest(ev.clientX - r.left), ev.clientX, ev.clientY); });
+  overlay.addEventListener("pointerleave", () => { cross.style.display = "none"; hideTip(); });
+  let kb = n - 1;
+  host.onkeydown = ev => {
+    if (ev.key !== "ArrowLeft" && ev.key !== "ArrowRight") return;
+    ev.preventDefault(); kb = Math.min(n - 1, Math.max(0, kb + (ev.key === "ArrowRight" ? 1 : -1)));
+    const r = host.getBoundingClientRect(); show(kb, r.left + x(kb), r.top + 80);
+  };
+  host.onfocus = () => { const r = host.getBoundingClientRect(); show(kb, r.left + x(kb), r.top + 80); };
+  host.onblur = () => { cross.style.display = "none"; hideTip(); };
+}
+
+/* ---------- 2. meaning profile ---------- */
+function renderGroups(w) {
+  const d = DATA.w[w];
+  const series = GROUPS.map(g => ({
+    name: g.label, short: g.k, color: g.c,
+    points: ERAS.map(e => { const [v, lo, hi] = d.groups[g.k][e.id]; return { y: v, lo, hi, note: `runs ${lo.toFixed(2)} to ${hi.toFixed(2)}` }; }),
+  }));
+  const all = series.flatMap(s => s.points.flatMap(p => [p.lo, p.hi]));
+  const lo = Math.min(...all), hi = Math.max(...all), pad = (hi - lo) * 0.12 + 0.01;
+  const leg = $("#groups-legend"); leg.replaceChildren();
+  GROUPS.forEach(g => { const k = h("span", { class: "key" }, h("span", { class: "swatch" }), g.label); k.firstChild.style.background = `var(--s${g.c})`; leg.append(k); });
+  drawLines($("#groups-chart"), { series, ymin: lo - pad, ymax: hi + pad, fmt: v => v.toFixed(2), labels: true, aria: `Similarity of “${w}” to four word groups, by period` });
+  table($("#groups-tbl"), ["Word group", ...ERAS.map(e => e.label + " (mean, runs range)")],
+    GROUPS.map(g => [g.label, ...ERAS.map(e => { const [v, a, b] = d.groups[g.k][e.id]; return `${v.toFixed(3)} (${a.toFixed(3)} to ${b.toFixed(3)})`; })]));
+}
+
+/* ---------- 3. frequency ---------- */
+function renderFreq(w) {
+  const d = DATA.w[w];
+  const pts = ERAS.map(e => ({ y: d.freq[e.id][1], note: `${fmtInt(d.freq[e.id][0])} uses` }));
+  const mx = Math.max(...pts.map(p => p.y));
+  drawLines($("#freq-chart"), {
+    series: [{ name: "per million words", short: "", color: 1, points: pts }], single: true,
+    ymin: 0, ymax: mx * 1.18, fmt: v => v >= 100 ? Math.round(v).toString() : v.toFixed(v < 10 ? 1 : 0), labels: false,
+    aria: `Occurrences of “${w}” per million words, by period`,
+  });
+  table($("#freq-tbl"), ["Period", "Uses", "Per million words"], ERAS.map(e => [e.label, fmtInt(d.freq[e.id][0]), d.freq[e.id][1].toFixed(2)]));
+}
+
+/* ---------- 4. books ---------- */
+function renderBooks(w) {
+  const rows = DATA.w[w].novels;
+  const ul = $("#books"); ul.replaceChildren();
+  if (!rows.length) {
+    ul.append(h("li", { class: "caption", text: `Book rankings were computed only for the 101 environmental seed words, and “${w}” is not one of them.` }));
+    table($("#books-tbl"), ["Title"], []);
+    return;
+  }
+  const mx = Math.max(...rows.map(r => r[6]), 1);
+  rows.forEach(r => {
+    const [title, author, year, era, count, rate, g2, flag] = r;
+    const fill = h("span", { class: "bk-fill" }); fill.style.width = `${(g2 / mx) * 100}%`;
+    const li = h("li", { class: "book", tabindex: "0" },
+      h("div", { class: "bk-head" }, h("span", { class: "bk-title", text: title }), flag ? h("span", { class: "flag", text: flag }) : null),
+      h("div", { class: "bk-meta", text: `${author || "no author listed"}, ${year} · ${eraLabel(era)} · ${count} uses` }),
+      h("div", { class: "bk-bar" }, h("div", { style: "flex:1;min-width:0;display:flex" }, fill), h("span", { class: "bk-val", text: `score ${fmtInt(Math.round(g2))}` })));
+    wireTip(li, () => ({ title, rows: [
+      { value: String(count), name: `uses (${rate} per 10,000 words)` },
+      { value: fmtInt(Math.round(g2)), name: "log-likelihood score" },
+      { value: `${author || "no author listed"}, ${year}`, name: eraLabel(era) },
+    ] }));
+    ul.append(li);
+  });
+  table($("#books-tbl"), ["Title", "Author", "Year", "Uses", "Per 10,000 words", "Score", "Flag"],
+    rows.map(r => [r[0], r[1] || "", r[2], r[4], r[5], r[6], r[7]]));
+}
+
+/* ---------- picker ---------- */
+let current = DATA.words[0];
+function renderAll() {
+  hideTip();
+  document.querySelectorAll("#filters .chip-btn").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.w === current)));
+  renderNbrs(current); renderGroups(current); renderFreq(current); renderBooks(current);
+}
+function setWord(w, updateHash) {
+  if (!DATA.w[w]) return;
+  current = w;
+  if (updateHash) { try { history.replaceState(null, "", "#" + w); } catch (e) { location.hash = w; } }
+  renderAll();
+}
+const filters = $("#filters");
+DATA.picker.forEach(g => {
+  const row = h("div", { class: "fgroup" }, h("span", { class: "lbl", text: g.label }));
+  g.words.forEach(w => { const b = h("button", { class: "chip-btn", type: "button", text: w, "data-w": w, "aria-pressed": "false" }); b.addEventListener("click", () => setWord(w, true)); row.append(b); });
+  filters.append(row);
+});
+window.addEventListener("hashchange", () => setWord(location.hash.slice(1), false));
+let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(() => { for (const [id, cfg] of chartState) drawLines($("#" + id), cfg); }, 80); }).observe(document.body);
+setWord(DATA.w[location.hash.slice(1)] ? location.hash.slice(1) : DATA.words[0], false);
+</script>
+
+</body>
+</html>

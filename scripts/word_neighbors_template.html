@@ -1,0 +1,476 @@
+<title>Word Neighbors 1945–1980</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one picker row, then four stacked cards (neighbors, meaning profile, frequency, books),
+   then a sources block. Quiet neutrals so the four series hues carry the charts. System sans only. */
+:root {
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --s3: #1baf7a;
+  --s4: #eda100;
+  --shadow: 0 4px 14px rgba(11, 11, 11, 0.12);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255, 255, 255, 0.10);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255, 255, 255, 0.10);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--page); color: var(--ink); font-family: var(--font); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1 { font-size: 28px; line-height: 1.15; font-weight: 600; margin: 0; text-wrap: balance; }
+h2 { font-size: 17px; line-height: 1.25; font-weight: 600; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.lede { color: var(--ink2); max-width: 68ch; margin-top: 8px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2); margin-bottom: 6px; }
+
+.filters { display: flex; flex-direction: column; gap: 8px; }
+.fgroup { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fgroup .lbl { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2); flex: 0 0 168px; }
+@media (max-width: 560px) { .fgroup .lbl { flex-basis: 100%; } }
+.chip-btn {
+  font: inherit; font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--axis);
+  border-radius: 999px; padding: 6px 14px; cursor: pointer;
+}
+.chip-btn:hover { background: var(--grid); }
+.chip-btn[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card .sub { color: var(--ink2); max-width: 70ch; }
+.caption { color: var(--ink2); font-size: 12px; max-width: 78ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--ink2); }
+.legend .key { display: inline-flex; align-items: center; gap: 6px; }
+.legend .swatch { display: inline-block; width: 14px; height: 2px; border-radius: 2px; }
+.legend .dotkey { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+
+/* neighbor ladders */
+.ladders { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; }
+.col-head { display: flex; flex-direction: column; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--grid); }
+.col-head strong { font-size: 15px; }
+.col-head .n { font-size: 12px; color: var(--ink2); }
+.ladder { list-style: none; margin: 0; padding: 0; }
+.rung { display: grid; grid-template-columns: 20px minmax(0, 1fr) 84px 38px; align-items: center; gap: 8px; padding: 4px 4px; border-radius: 4px; }
+.rung:hover, .rung:focus-visible { background: var(--page); }
+.rk { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.wd { overflow-wrap: anywhere; }
+.rung.rare .wd { color: var(--ink2); }
+.wd sup { color: var(--muted); margin-left: 1px; }
+.track { position: relative; display: block; height: 14px; margin: 0 6px; }
+.track::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 1px; background: var(--grid); }
+.dot { position: absolute; top: 3px; width: 8px; height: 8px; border-radius: 50%; background: var(--s1); box-shadow: 0 0 0 2px var(--surface); }
+.rung.rare .dot { background: var(--muted); }
+.cv { text-align: right; font-size: 12px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+
+/* line charts */
+.chart { position: relative; min-width: 0; }
+.chart svg { display: block; max-width: 100%; }
+.chart:focus-visible { outline-offset: 4px; }
+svg text { font-family: var(--font); }
+.gridline { stroke: var(--grid); stroke-width: 1; }
+.baseline { stroke: var(--axis); stroke-width: 1; }
+.tick { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.xlab { fill: var(--ink2); font-size: 12px; }
+.endlab { fill: var(--ink2); font-size: 12px; }
+.crosshair { stroke: var(--axis); stroke-width: 1; }
+
+/* books */
+.books { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.book { padding: 6px 8px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; }
+.book:hover, .book:focus-visible { background: var(--page); }
+.bk-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.bk-title { font-weight: 600; overflow-wrap: anywhere; }
+.flag { font-size: 11px; color: var(--ink2); border: 1px solid var(--axis); border-radius: 4px; padding: 0 6px; }
+.bk-meta { color: var(--ink2); font-size: 12px; }
+.bk-bar { display: flex; align-items: center; gap: 8px; }
+.bk-fill { height: 8px; background: var(--s1); border-radius: 0 4px 4px 0; min-width: 2px; }
+.bk-val { font-size: 12px; color: var(--ink2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* table views */
+details { font-size: 12px; color: var(--ink2); }
+summary { cursor: pointer; width: max-content; }
+.tbl-wrap { overflow-x: auto; margin-top: 8px; max-width: 100%; }
+table { border-collapse: collapse; font-size: 12px; min-width: 100%; }
+th, td { text-align: left; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--grid); font-variant-numeric: tabular-nums; vertical-align: top; }
+th { color: var(--ink2); font-weight: 600; white-space: nowrap; }
+
+/* tooltip */
+#tip { position: fixed; z-index: 20; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--axis); border-radius: 6px; box-shadow: var(--shadow); padding: 8px 10px; font-size: 12px; max-width: 280px; }
+.tt-title { font-weight: 600; margin-bottom: 4px; overflow-wrap: anywhere; }
+.tt-row { display: flex; align-items: center; gap: 6px; line-height: 1.5; }
+.tt-row strong { font-weight: 600; font-variant-numeric: tabular-nums; }
+.tt-name { color: var(--ink2); }
+.tt-key { display: inline-block; width: 12px; height: 2px; border-radius: 2px; flex: none; }
+
+.notes ul { margin: 6px 0 0; padding-left: 18px; color: var(--ink2); font-size: 12px; display: flex; flex-direction: column; gap: 4px; max-width: 86ch; }
+.notes h2 { margin-bottom: 2px; }
+</style>
+
+<main class="wrap">
+  <header>
+    <div class="eyebrow">Word2vec models of American science fiction, 2,868 volumes</div>
+    <h1>Word neighbors, 1945–1980</h1>
+    <p class="lede">Three models, trained separately on the volumes published 1945–61, 1962–71 and 1972–80, each run three times. Pick one of five words to see what it sits next to in each period, how its meaning shifts, how often it is used, and which books use it most.</p>
+  </header>
+
+  <div class="filters" id="filters" role="group" aria-label="Choose a word"></div>
+
+  <section class="card" aria-labelledby="h-nbrs">
+    <div>
+      <h2 id="h-nbrs">What it sits next to</h2>
+      <p class="sub">The 20 closest words in each period, with similarity averaged over the three training runs.</p>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span class="key"><span class="dotkey" style="background:var(--s1)"></span>used 20 or more times in that period</span>
+      <span class="key"><span class="dotkey" style="background:var(--muted)"></span>rarer than that</span>
+      <span class="key"><span>†</span>fewer than 20 uses</span>
+      <span class="key"><span>°</span>in the top 20 of at most one run</span>
+    </div>
+    <div class="ladders" id="nbrs-grid"></div>
+    <p class="caption" id="nbrs-cap"></p>
+    <details><summary>Table view</summary><div class="tbl-wrap" id="nbrs-tbl"></div></details>
+  </section>
+
+  <section class="card" aria-labelledby="h-groups">
+    <div>
+      <h2 id="h-groups">Which kind of meaning it leans toward</h2>
+      <p class="sub">Cosine similarity between the word and the average of four word groups. Vertical whiskers span the three training runs.</p>
+    </div>
+    <div class="legend" id="groups-legend"></div>
+    <div class="chart" id="groups-chart" tabindex="0" role="group" aria-label="Line chart of similarity to four word groups by period. Use left and right arrow keys to read each period."></div>
+    <p class="caption">Each group is a fixed list of words, given under Sources. If the chosen word is itself in a group, it is left out of that group's average. Similarity scores shift with how often a word is used, so read the direction of each line more than the absolute level.</p>
+    <details><summary>Table view</summary><div class="tbl-wrap" id="groups-tbl"></div></details>
+  </section>
+
+  <section class="card" aria-labelledby="h-freq">
+    <div>
+      <h2 id="h-freq">How often it is used</h2>
+      <p class="sub">Occurrences per million words in each period.</p>
+    </div>
+    <div class="chart" id="freq-chart" tabindex="0" role="group" aria-label="Line chart of occurrences per million words by period. Use left and right arrow keys to read each period."></div>
+    <details><summary>Table view</summary><div class="tbl-wrap" id="freq-tbl"></div></details>
+  </section>
+
+  <section class="card" aria-labelledby="h-books">
+    <div>
+      <h2 id="h-books">Which books use it most distinctively</h2>
+      <p class="sub">The 10 volumes with the highest log-likelihood score for this word against the rest of the corpus. Bar length is the score; the count is how many times the book uses the word.</p>
+    </div>
+    <ul class="books" id="books"></ul>
+    <p class="caption">The keyness table keeps only the top 15 volumes per word, and only volumes with at least 3 uses, so this view cannot show which books drive an early period where the word is rare. Flags such as "nonfiction" and "edited volume" are my reading of the title and author field and are not verified.</p>
+    <details><summary>Table view</summary><div class="tbl-wrap" id="books-tbl"></div></details>
+  </section>
+
+  <section class="card notes" aria-labelledby="h-src">
+    <h2 id="h-src">Where these numbers come from</h2>
+    <ul>
+      <li><strong>Neighbors and meaning profile:</strong> the nine word2vec models in v_2_word2vec_models (three periods, three random seeds each; 300 dimensions, skip-gram). Similarity is cosine similarity, averaged over the seeds. Neighbors rank by that average.</li>
+      <li><strong>Word groups:</strong> bodily / bacterial = bacterial, bacteria, disease, decay, decomposition, infection, putrid. crowding / population = overpopulation, overcrowding, population explosion, overpopulated. industrial / chemical = chemical, industrial, smog, sewage, factories, fumes. nuclear / radiation = radioactivity, fallout, radiation, radioactive, nuclear, atomic. I chose these lists; changing them changes the lines.</li>
+      <li><strong>Frequency:</strong> counts from each model's vocabulary, per million tokens. Each period was subsampled to the same size (about 54 million tokens) before training, and frequent word pairs such as "nuclear war" were merged into one token first, so counts can run slightly below raw text counts. For the words in out_w2v_v2/tables/freq.csv the figures are identical to that file.</li>
+      <li><strong>Books:</strong> novel_keyness_top_by_word.csv, Dunning G2 of each volume against the rest of the corpus (minimum 3 uses, top 15 per word kept). It covers the 101 environmental seed words. Volumes that bind several novels under one HathiTrust ID show their titles joined with a slash.</li>
+      <li><strong>Periods:</strong> 1945–61 (before Silent Spring), 1962–71, 1972–80 (Clean Water Act onward).</li>
+    </ul>
+  </section>
+</main>
+
+<div id="tip" role="tooltip" hidden></div>
+
+<script>
+const DATA = /*DATA*/;
+
+const ERAS = [
+  { id: "era_a", label: "1945–61" },
+  { id: "era_b", label: "1962–71" },
+  { id: "era_c", label: "1972–80" },
+];
+const eraLabel = id => (ERAS.find(e => e.id === id) || {}).label || id;
+const GROUPS = [
+  { k: "bodily", label: "bodily / bacterial", c: 1 },
+  { k: "crowding", label: "crowding / population", c: 2 },
+  { k: "industrial", label: "industrial / chemical", c: 3 },
+  { k: "nuclear", label: "nuclear / radiation", c: 4 },
+];
+
+const $ = (sel, root = document) => root.querySelector(sel);
+
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  if (props) for (const [k, v] of Object.entries(props)) {
+    if (k === "class") e.className = v;
+    else if (k === "text") e.textContent = v;
+    else e.setAttribute(k, v);
+  }
+  for (const kid of kids) {
+    if (kid == null) continue;
+    e.append(typeof kid === "object" ? kid : document.createTextNode(kid));
+  }
+  return e;
+}
+const NS = "http://www.w3.org/2000/svg";
+function sv(tag, attrs) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v);
+  return e;
+}
+const fmtInt = n => n.toLocaleString("en-US");
+
+/* ---------- tooltip ---------- */
+const tip = $("#tip");
+function showTip(clientX, clientY, title, rows) {
+  tip.replaceChildren();
+  if (title) tip.append(h("div", { class: "tt-title", text: title }));
+  for (const r of rows) {
+    const line = h("div", { class: "tt-row" });
+    if (r.key != null) { const k = h("span", { class: "tt-key" }); k.style.background = `var(--s${r.key})`; line.append(k); }
+    line.append(h("strong", { text: r.value }), h("span", { class: "tt-name", text: r.name }));
+    tip.append(line);
+  }
+  tip.hidden = false;
+  const w = tip.offsetWidth, ht = tip.offsetHeight;
+  let x = clientX + 14, y = clientY + 14;
+  if (x + w > window.innerWidth - 8) x = Math.max(8, clientX - w - 14);
+  if (y + ht > window.innerHeight - 8) y = Math.max(8, clientY - ht - 14);
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+const hideTip = () => { tip.hidden = true; };
+function wireTip(el, getContent) {
+  const show = (cx, cy) => { const c = getContent(); showTip(cx, cy, c.title, c.rows); };
+  el.addEventListener("pointermove", ev => show(ev.clientX, ev.clientY));
+  el.addEventListener("pointerleave", hideTip);
+  el.addEventListener("focus", () => { const r = el.getBoundingClientRect(); show(r.left + 24, r.bottom - 4); });
+  el.addEventListener("blur", hideTip);
+}
+
+/* ---------- table helper ---------- */
+function table(host, head, rows) {
+  host.replaceChildren();
+  const t = h("table");
+  const thead = h("thead"), hr = h("tr");
+  head.forEach(x => hr.append(h("th", { scope: "col", text: x })));
+  thead.append(hr); t.append(thead);
+  const tb = h("tbody");
+  rows.forEach(r => { const tr = h("tr"); r.forEach(c => tr.append(h("td", { text: String(c) }))); tb.append(tr); });
+  t.append(tb); host.append(t);
+}
+
+/* ---------- 1. neighbor ladders ---------- */
+function renderNbrs(w) {
+  const d = DATA.w[w];
+  const grid = $("#nbrs-grid"); grid.replaceChildren();
+  for (const e of ERAS) {
+    const rows = d.nbrs[e.id];
+    const vals = rows.map(r => r[1]);
+    const lo = Math.min(...vals), hi = Math.max(...vals), span = hi - lo || 1;
+    const col = h("div", null,
+      h("div", { class: "col-head" },
+        h("strong", { text: e.label }),
+        h("span", { class: "n", text: `${fmtInt(d.uses[e.id])} uses of “${w}”` })));
+    const ol = h("ol", { class: "ladder" });
+    rows.forEach((r, i) => {
+      const [word, cos, seeds, count] = r;
+      const rare = count < 20, weak = seeds <= 1;
+      const li = h("li", { class: "rung" + (rare ? " rare" : ""), tabindex: "0" });
+      const dot = h("span", { class: "dot" });
+      dot.style.left = `calc(${((cos - lo) / span) * 100}% - 4px)`;
+      const track = h("span", { class: "track" }, dot);
+      li.append(
+        h("span", { class: "rk", text: String(i + 1) }),
+        h("span", { class: "wd" }, word, rare ? h("sup", { text: "†" }) : null, weak ? h("sup", { text: "°" }) : null),
+        track,
+        h("span", { class: "cv", text: cos.toFixed(2) }));
+      wireTip(li, () => ({
+        title: word,
+        rows: [
+          { value: cos.toFixed(3), name: "mean cosine similarity" },
+          { value: `${seeds} of 3`, name: "runs list it in their top 20" },
+          { value: fmtInt(count), name: `uses in ${e.label}` },
+        ],
+      }));
+      ol.append(li);
+    });
+    col.append(ol); grid.append(col);
+  }
+  const few = ERAS.filter(e => d.uses[e.id] < 100).map(e => `${e.label} (${fmtInt(d.uses[e.id])} uses)`);
+  $("#nbrs-cap").textContent =
+    "The dot shows where each word falls between the lowest and highest similarity in its own column, so compare ranks across periods, not dot positions. " +
+    (few.length ? `Few uses in ${few.join(" and ")}: those neighbors can come from one or two books.` : "");
+  table($("#nbrs-tbl"), ["Rank", ...ERAS.map(e => e.label + " (word, mean cosine, runs, uses)")],
+    Array.from({ length: 20 }, (_, i) => [i + 1, ...ERAS.map(e => {
+      const r = d.nbrs[e.id][i]; return r ? `${r[0]}, ${r[1].toFixed(3)}, ${r[2]}/3, ${fmtInt(r[3])}` : "";
+    })]));
+}
+
+/* ---------- line chart ---------- */
+function niceTicks(min, max, target = 5) {
+  const raw = (max - min) / target, mag = 10 ** Math.floor(Math.log10(raw)), n = raw / mag;
+  const step = (n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10) * mag;
+  const out = [];
+  for (let v = Math.ceil(min / step - 1e-9) * step; v <= max + 1e-9; v += step) out.push(+v.toFixed(10));
+  return out;
+}
+
+let chartState = new Map();
+function drawLines(host, cfg) {
+  chartState.set(host.id, cfg);
+  host.replaceChildren();
+  const W = Math.max(300, host.clientWidth || 640), H = 300;
+  const m = { l: 48, r: 24, t: 14, b: 34 };
+  const y = v => m.t + (1 - (v - cfg.ymin) / (cfg.ymax - cfg.ymin)) * (H - m.t - m.b);
+
+  // direct labels only if the end labels would not collide
+  const ends = cfg.series.map(s => ({ s, y: y(s.points[s.points.length - 1].y) })).sort((a, b) => a.y - b.y);
+  const labelsOK = cfg.labels && ends.every((e, i) => i === 0 || e.y - ends[i - 1].y >= 14);
+  if (labelsOK) m.r = 92;
+
+  const padX = 28, n = cfg.series[0].points.length;
+  const x = i => m.l + padX + i * (W - m.l - m.r - 2 * padX) / (n - 1);
+
+  const svg = sv("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": cfg.aria });
+  for (const t of niceTicks(cfg.ymin, cfg.ymax)) {
+    svg.append(sv("line", { class: "gridline", x1: m.l, x2: W - m.r, y1: y(t), y2: y(t) }));
+    const tl = sv("text", { class: "tick", x: m.l - 8, y: y(t) + 4, "text-anchor": "end" }); tl.textContent = cfg.fmt(t); svg.append(tl);
+  }
+  svg.append(sv("line", { class: "baseline", x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b }));
+  ERAS.forEach((e, i) => { const t = sv("text", { class: "xlab", x: x(i), y: H - 10, "text-anchor": "middle" }); t.textContent = e.label; svg.append(t); });
+
+  const cross = sv("line", { class: "crosshair", y1: m.t, y2: H - m.b, x1: 0, x2: 0 }); cross.style.display = "none"; svg.append(cross);
+
+  for (const s of cfg.series) {
+    const col = `var(--s${s.color})`;
+    const d = s.points.map((p, i) => `${i ? "L" : "M"}${x(i)},${y(p.y)}`).join(" ");
+    const path = sv("path", { d, fill: "none", "stroke-width": 2, "stroke-linecap": "round", "stroke-linejoin": "round" }); path.style.stroke = col; svg.append(path);
+    s.points.forEach((p, i) => {
+      if (p.lo != null && p.hi - p.lo > 0.0005) {
+        const wh = sv("line", { x1: x(i), x2: x(i), y1: y(p.lo), y2: y(p.hi), "stroke-width": 1.5, opacity: 0.55 }); wh.style.stroke = col; svg.append(wh);
+        for (const yy of [p.lo, p.hi]) { const cap = sv("line", { x1: x(i) - 4, x2: x(i) + 4, y1: y(yy), y2: y(yy), "stroke-width": 1.5, opacity: 0.55 }); cap.style.stroke = col; svg.append(cap); }
+      }
+    });
+    s.points.forEach((p, i) => { const c = sv("circle", { cx: x(i), cy: y(p.y), r: 4, "stroke-width": 2 }); c.style.fill = col; c.style.stroke = "var(--surface)"; svg.append(c); });
+  }
+  if (labelsOK) for (const e of ends) { const t = sv("text", { class: "endlab", x: x(n - 1) + 12, y: e.y + 4 }); t.textContent = e.s.short; svg.append(t); }
+
+  const overlay = sv("rect", { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent" });
+  svg.append(overlay); host.append(svg);
+
+  const nearest = px => { let b = 0, bd = 1e9; for (let i = 0; i < n; i++) { const dd = Math.abs(px - x(i)); if (dd < bd) { bd = dd; b = i; } } return b; };
+  const show = (i, cx, cy) => {
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.style.display = "";
+    showTip(cx, cy, ERAS[i].label, cfg.series.map(s => ({ key: cfg.single ? 1 : s.color, value: cfg.fmt(s.points[i].y), name: s.name + (s.points[i].note ? ` (${s.points[i].note})` : "") })));
+  };
+  overlay.addEventListener("pointermove", ev => { const r = svg.getBoundingClientRect(); show(nearest(ev.clientX - r.left), ev.clientX, ev.clientY); });
+  overlay.addEventListener("pointerleave", () => { cross.style.display = "none"; hideTip(); });
+  let kb = n - 1;
+  host.onkeydown = ev => {
+    if (ev.key !== "ArrowLeft" && ev.key !== "ArrowRight") return;
+    ev.preventDefault(); kb = Math.min(n - 1, Math.max(0, kb + (ev.key === "ArrowRight" ? 1 : -1)));
+    const r = host.getBoundingClientRect(); show(kb, r.left + x(kb), r.top + 80);
+  };
+  host.onfocus = () => { const r = host.getBoundingClientRect(); show(kb, r.left + x(kb), r.top + 80); };
+  host.onblur = () => { cross.style.display = "none"; hideTip(); };
+}
+
+/* ---------- 2. meaning profile ---------- */
+function renderGroups(w) {
+  const d = DATA.w[w];
+  const series = GROUPS.map(g => ({
+    name: g.label, short: g.k, color: g.c,
+    points: ERAS.map(e => { const [v, lo, hi] = d.groups[g.k][e.id]; return { y: v, lo, hi, note: `runs ${lo.toFixed(2)} to ${hi.toFixed(2)}` }; }),
+  }));
+  const all = series.flatMap(s => s.points.flatMap(p => [p.lo, p.hi]));
+  const lo = Math.min(...all), hi = Math.max(...all), pad = (hi - lo) * 0.12 + 0.01;
+  const leg = $("#groups-legend"); leg.replaceChildren();
+  GROUPS.forEach(g => { const k = h("span", { class: "key" }, h("span", { class: "swatch" }), g.label); k.firstChild.style.background = `var(--s${g.c})`; leg.append(k); });
+  drawLines($("#groups-chart"), { series, ymin: lo - pad, ymax: hi + pad, fmt: v => v.toFixed(2), labels: true, aria: `Similarity of “${w}” to four word groups, by period` });
+  table($("#groups-tbl"), ["Word group", ...ERAS.map(e => e.label + " (mean, runs range)")],
+    GROUPS.map(g => [g.label, ...ERAS.map(e => { const [v, a, b] = d.groups[g.k][e.id]; return `${v.toFixed(3)} (${a.toFixed(3)} to ${b.toFixed(3)})`; })]));
+}
+
+/* ---------- 3. frequency ---------- */
+function renderFreq(w) {
+  const d = DATA.w[w];
+  const pts = ERAS.map(e => ({ y: d.freq[e.id][1], note: `${fmtInt(d.freq[e.id][0])} uses` }));
+  const mx = Math.max(...pts.map(p => p.y));
+  drawLines($("#freq-chart"), {
+    series: [{ name: "per million words", short: "", color: 1, points: pts }], single: true,
+    ymin: 0, ymax: mx * 1.18, fmt: v => v >= 100 ? Math.round(v).toString() : v.toFixed(v < 10 ? 1 : 0), labels: false,
+    aria: `Occurrences of “${w}” per million words, by period`,
+  });
+  table($("#freq-tbl"), ["Period", "Uses", "Per million words"], ERAS.map(e => [e.label, fmtInt(d.freq[e.id][0]), d.freq[e.id][1].toFixed(2)]));
+}
+
+/* ---------- 4. books ---------- */
+function renderBooks(w) {
+  const rows = DATA.w[w].novels;
+  const ul = $("#books"); ul.replaceChildren();
+  if (!rows.length) {
+    ul.append(h("li", { class: "caption", text: `Book rankings were computed only for the 101 environmental seed words, and “${w}” is not one of them.` }));
+    table($("#books-tbl"), ["Title"], []);
+    return;
+  }
+  const mx = Math.max(...rows.map(r => r[6]), 1);
+  rows.forEach(r => {
+    const [title, author, year, era, count, rate, g2, flag] = r;
+    const fill = h("span", { class: "bk-fill" }); fill.style.width = `${(g2 / mx) * 100}%`;
+    const li = h("li", { class: "book", tabindex: "0" },
+      h("div", { class: "bk-head" }, h("span", { class: "bk-title", text: title }), flag ? h("span", { class: "flag", text: flag }) : null),
+      h("div", { class: "bk-meta", text: `${author || "no author listed"}, ${year} · ${eraLabel(era)} · ${count} uses` }),
+      h("div", { class: "bk-bar" }, h("div", { style: "flex:1;min-width:0;display:flex" }, fill), h("span", { class: "bk-val", text: `score ${fmtInt(Math.round(g2))}` })));
+    wireTip(li, () => ({ title, rows: [
+      { value: String(count), name: `uses (${rate} per 10,000 words)` },
+      { value: fmtInt(Math.round(g2)), name: "log-likelihood score" },
+      { value: `${author || "no author listed"}, ${year}`, name: eraLabel(era) },
+    ] }));
+    ul.append(li);
+  });
+  table($("#books-tbl"), ["Title", "Author", "Year", "Uses", "Per 10,000 words", "Score", "Flag"],
+    rows.map(r => [r[0], r[1] || "", r[2], r[4], r[5], r[6], r[7]]));
+}
+
+/* ---------- picker ---------- */
+let current = DATA.words[0];
+function renderAll() {
+  hideTip();
+  document.querySelectorAll("#filters .chip-btn").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.w === current)));
+  renderNbrs(current); renderGroups(current); renderFreq(current); renderBooks(current);
+}
+function setWord(w, updateHash) {
+  if (!DATA.w[w]) return;
+  current = w;
+  if (updateHash) { try { history.replaceState(null, "", "#" + w); } catch (e) { location.hash = w; } }
+  renderAll();
+}
+const filters = $("#filters");
+DATA.picker.forEach(g => {
+  const row = h("div", { class: "fgroup" }, h("span", { class: "lbl", text: g.label }));
+  g.words.forEach(w => { const b = h("button", { class: "chip-btn", type: "button", text: w, "data-w": w, "aria-pressed": "false" }); b.addEventListener("click", () => setWord(w, true)); row.append(b); });
+  filters.append(row);
+});
+window.addEventListener("hashchange", () => setWord(location.hash.slice(1), false));
+let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(() => { for (const [id, cfg] of chartState) drawLines($("#" + id), cfg); }, 80); }).observe(document.body);
+setWord(DATA.w[location.hash.slice(1)] ? location.hash.slice(1) : DATA.words[0], false);
+</script>
